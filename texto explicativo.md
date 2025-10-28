@@ -1,108 +1,259 @@
- 
+# Trabalho Prático: Apache Flink - Instalação e Prática
 
+**DIRETORIA DE EDUCAÇÃO CONTINUADA - IEC**
 
-DIRETORIA DE EDUCAÇÃO CONTINUADA - IEC
+---
 
+## 📋 Informações da Disciplina
 
+| Campo | Informação |
+|-------|------------|
+| **Disciplina** | Camadas e Serviços de Consumo de Dados |
+| **Curso** | Arquitetura e Engenharia de Dados |
+| **Professor** | Ricardo Brito Alves |
+| **Instituição** | PUC Minas |
 
+### 👥 Equipe
+- **Aluno 1**: [Nome]
+- **Aluno 2**: [Nome]
 
-Disciplina: CAMADAS E SERVIÇOS DE CONSUMO DE DADOS
+---
 
-Nome do curso: ARQUITETURA E ENGENHARIA DE DADOS
-Professor: Ricardo Brito Alves
+## 🎯 Apache Flink e SQL
 
+### Objetivos do Trabalho
 
-Trabalho Prático – Apache Flink – Instalação e Prática
-Aluno:
--
--
+O **Apache Flink** é uma estrutura de código aberto para processamento de dados nos modos:
+- **Stream** (fluxo de dados em tempo real)
+- **Batch** (processamento em lote)
 
- 
+#### 🔧 Tecnologias Suportadas
+- **Plataformas**: Apache Kafka, bancos JDBC
+- **Linguagens**: Java, Scala, Python (PyFlink)
+- **Integração ML**: Bibliotecas de Machine Learning via PyFlink
 
+#### 💡 Por que SQL?
+O **SQL** é uma das linguagens mais universais no mundo dos dados:
+- **Analistas de dados** → Consultas e relatórios
+- **Cientistas de dados** → Análise exploratória  
+- **Engenheiros de dados** → Pipelines de ETL
+- **Abstração universal** → Independente da tecnologia subjacente
 
-APACHE FLINK E SQL
+### 🚀 Proposta do Projeto
+Com o Apache Flink, você pode definir **pipelines de dados inteiros** em SQL puro usando o **SQL Client**. Este trabalho configura uma plataforma local baseada em Docker para Apache Flink, incluindo um cliente SQL interativo.
 
+> **Fonte**: Trabalho adaptado de [Apache Flink on Docker](https://dev.to/ftisiot/apache-flink-on-docker-4kij)
 
-Objetivos 
-O Apache Flink é uma estrutura de código aberto para processamento de dados no modo de stream (fluxo) e batch (lote). Ele suporta uma variedade de plataformas de dados diferentes, incluindo Apache Kafka e qualquer banco de dados JDBC. Os poderes do Flink vêm em uma variedade de linguagens: desde o Java e Scala mais tradicionais, até o Python. E para Python há pyFlink que você pode usar com as melhores bibliotecas de aprendizado de máquina disponíveis.
-No entanto, no mundo dos dados, uma das linguagens mais conhecidas é o SQL. De analistas de dados a cientistas e engenheiros, o SQL geralmente faz parte do kit de ferramentas de qualquer profissional de dados. O SQL fornece uma abstração para acesso e manipulação de dados que vai além das tecnologias e tendências. Você pode usá-lo para consultar seus dados, independentemente da tecnologia subjacente (com pequenas diferenças de dialeto).
-Com o Apache Flink, você pode definir pipelines de dados inteiros em SQL puro usando seu SQL Client. Este trabalho ajudará você a configurar uma plataforma local baseada em docker para o Apache Flink, incluindo um cliente SQL.
+---
 
-Fonte: trabalho adaptado de https://dev.to/ftisiot/apache-flink-on-docker-4kij
+## 🛠️ Atividades Práticas
 
-Atividades
-Configurar o Apache Flink localmente com o Docker Compose
-O Apache Flink é uma tecnologia muito interessante e vale a pena experimentar. 
-Para minimizar o trabalho de configuração, vamos usar o Docker. Ele oferece ferramentas como soluções pré-empacotadas portáteis em qualquer sistema operacional convidado com o mínimo de esforço.
-Copie a pasta do drive:
-https://drive.google.com/drive/folders/1G9c87P0UhfJiY2pyeABZbDtUqgC_6kP8?
-Antes de começar, certifique-se de que o docker e o docker-compose estejam instalados.
+### 1. Configuração do Apache Flink com Docker Compose
 
-Agora vamos abrir a pasta flink-sql-cli-docker e iniciar a composição do docker:
-cd ...\flink-sql-cli-docker
+O Apache Flink é uma tecnologia poderosa que merece ser explorada. Para minimizar o esforço de configuração, utilizamos **Docker** como solução containerizada portável.
 
-Rodar o arquivo docker-compose.yml
+#### 📋 Pré-requisitos
+Certifique-se de que estão instalados:
+- ✅ Docker Desktop
+- ✅ Docker Compose
+
+#### 🚀 Iniciando o Ambiente
+
+```bash
+# Navegue até o diretório do projeto
+cd flink-sql-cli-docker
+
+# Inicie os serviços em background
 docker-compose up -d
- 
+```
 
-Isso iniciará 3 nós do Apache Flink em segundo plano: um gerenciador de tarefas, um gerenciador de tarefas e o cliente sql. Podemos revisar os detalhes do cluster assim:
+Este comando iniciará **3 componentes** do Apache Flink:
+- **Job Manager** → Coordenador do cluster
+- **Task Manager** → Executor de tarefas
+- **SQL Client** → Interface SQL interativa
+
+#### ✅ Verificação do Status
+
+```bash
+# Verifique se os contêineres estão rodando
 docker-compose ps
-Isso deve mostrar que os três contêineres estão no estado Up:
- 
+```
 
-A interface do usuário da Web do Flink agora está disponível no endereço localhost:8081. Esta é uma ferramenta útil para navegar por informações sobre o status do Flink e os pipelines de dados que vamos criar.
- 
+**Resultado esperado:**
+```
+    Name                 Command            State                    Ports                  
+------------------------------------------------------------------------------------------
+jobmanager      /docker-entrypoint.sh   Up      6123/tcp, 0.0.0.0:8081->8081/tcp        
+sql-client      /docker-entrypoint.sh   Up                                               
+taskmanager     /docker-entrypoint.sh   Up      6121-6125/tcp                            
+```
 
+#### 🌐 Interface Web
+A **interface web do Flink** está disponível em: **http://localhost:8081**
 
+Esta ferramenta permite:
+- Monitorar status do cluster
+- Visualizar jobs em execução
+- Acompanhar métricas de performance
+- Gerenciar pipelines de dados
 
-Observações sobre como configurar o Docker-Compose
-Em docker-compose.yml mapeamos a subpasta settings para a pasta jobmanager docker container /settings. Dessa forma, os arquivos de configurações podem ser passados entre o host e o convidado, o que é útil se arquivos específicos gerados pelo host (por exemplo, armazenamentos de chaves) forem necessários para autenticação.
-A subpasta de dados também é mapeada para os contêineres taskmanager e jobmanager. Isso ocorre puramente porque eu precisava fornecer o exemplo SQL abaixo, mas pode ser útil nos casos em que queremos testar o comportamento do Apache Flink em arquivos em um sistema de arquivos local. A subpasta de dados contém um arquivo test.csv com dados inventados que usaremos para testar o Apache Flink.
+---
 
-Liberando o SQL no Flink
-Se quisermos brincar com o SQL do Flink, precisamos entrar no contêiner sql-client. Podemos fazer isso executando o seguinte comando no terminal:
+### 2. Configurações do Docker Compose
+
+#### 📁 Mapeamento de Volumes
+
+No `docker-compose.yml`, são mapeadas duas pastas importantes:
+
+**`/settings`**
+- Compartilha configurações entre host e containers
+- Útil para arquivos de autenticação (keystores, certificados)
+- Permite customização sem rebuild da imagem
+
+**`/data`**  
+- Disponibiliza dados para processamento
+- Contém o arquivo `test.csv` para demonstrações
+- Facilita testes com arquivos do sistema local
+
+---
+
+### 3. Utilizando o SQL Client
+
+#### 🔑 Acessando o Cliente SQL
+
+```bash
+# Entre no container SQL Client
 docker exec -it sql-client /bin/bash
 
- 
-
-Já estamos dentro do container, e podemos iniciar o cliente SQL do Flink com:
+# Inicie o cliente SQL do Flink
 ./sql-client.sh
+```
 
- 
+Agora você terá um **cliente SQL totalmente funcional** para criar pipelines de dados com várias fontes e destinos.
 
-Agora temos um cliente SQL totalmente funcional que podemos usar para criar pipelines de dados anexados a uma variedade de fontes de dados e destinos. Como um pequeno exemplo de demonstração, podemos consultar o arquivo test.csv dentro da pasta flink-sql-cli-docker/data definindo a tabela Flink associada no SQL Client. Execute o comando abaixo:
-create table
-  people_job (
+#### 📊 Exemplo Prático: Criando uma Tabela
+
+Execute o comando para criar uma tabela baseada no arquivo CSV:
+
+```sql
+CREATE TABLE people_job (
     id INT,
     name STRING,
     job STRING,
     salary BIGINT
-  )
-  WITH (
+) WITH (
     'connector' = 'filesystem',
     'path' = 'file:///data/test.csv',
     'format' = 'csv',
     'csv.ignore-parse-errors' = 'true'
-    );
+);
+```
 
- 
+#### 🔍 Consultando os Dados
 
-Podemos consultar a tabela:
-select * from people_job;
-Com os seguintes resultados:
-+/-                        id                      name                       job                    salary
-  +                         1                       Ugo           Football Player              200000
-  +                         2                     Carlo    Crocodile domesticator        30000
-  +                         3                     Maria         Software Engineer          210000
-  +                         4                    Sandro               UX Designer           70000
-  +                         5                   Melissa         Software Engineer        95000
+```sql
+-- Listar todos os registros
+SELECT * FROM people_job;
+```
 
-Consultar a tabela com outros comandos SQL, como:
-select * from people_job where id = 1;
-select job from people_job where id = 2;
+**Resultado esperado:**
+```
++------+----------+------------------------+--------+
+|   id |     name |                    job | salary |
++------+----------+------------------------+--------+
+|    1 |      Ugo |        Football Player | 200000 |
+|    2 |    Carlo | Crocodile domesticator |  30000 |
+|    3 |    Maria |      Software Engineer | 210000 |
+|    4 |   Sandro |            UX Designer |  70000 |
+|    5 |  Melissa |      Software Engineer |  95000 |
++------+----------+------------------------+--------+
+```
 
-Saia da visualização de tabela do Flink pressionando Q.
- 
+#### 📈 Consultas Avançadas
 
-Entrega:
-Ao final da prática, entre no browser (http://localhost:8081/) e tire print da interface web do Apache Flink Dashboard. Entregue este print.
+```sql
+-- Buscar por ID específico
+SELECT * FROM people_job WHERE id = 1;
+
+-- Filtrar por profissão
+SELECT job FROM people_job WHERE id = 2;
+
+-- Análise estatística por profissão
+SELECT 
+    job,
+    COUNT(*) as total_pessoas,
+    AVG(salary) as salario_medio,
+    MAX(salary) as maior_salario
+FROM people_job 
+GROUP BY job;
+```
+
+#### 🚪 Saindo do Cliente SQL
+
+Para sair da visualização de resultados:
+```
+Pressione: Q
+```
+
+Para sair do SQL Client:
+```sql
+EXIT;
+```
+
+Para sair do container:
+```bash
+exit
+```
+
+---
+
+## 📋 Entrega do Trabalho
+
+### 🎯 Requisitos de Entrega
+
+1. **Screenshot do Dashboard**
+   - Acesse: http://localhost:8081/
+   - Capture a interface web do Apache Flink Dashboard
+   - Certifique-se de que mostra o cluster ativo
+
+2. **Evidências de Execução**
+   - Comandos executados no SQL Client
+   - Resultados das consultas SQL
+   - Status dos containers Docker
+
+3. **Documentação**
+   - Relatório das atividades realizadas
+   - Análise dos resultados obtidos
+   - Reflexões sobre o uso do Apache Flink
+
+### ✅ Critérios de Avaliação
+
+- **Configuração correta** do ambiente Docker
+- **Execução bem-sucedida** dos comandos SQL
+- **Captura adequada** do dashboard web
+- **Documentação clara** do processo
+- **Compreensão demonstrada** dos conceitos
+
+---
+
+## 🎓 Aprendizados Esperados
+
+Ao concluir este trabalho, você terá:
+
+- ✅ **Configurado um cluster Apache Flink** completo
+- ✅ **Executado consultas SQL** em dados distribuídos  
+- ✅ **Compreendido arquiteturas** de processamento de streams
+- ✅ **Trabalhado com containerização** via Docker
+- ✅ **Explorado ferramentas** de Big Data modernas
+
+### 🚀 Próximos Passos
+
+- Integração com Apache Kafka para streams reais
+- Conectores para bancos de dados relacionais
+- Desenvolvimento de jobs Java/Scala personalizados
+- Implementação de pipelines de Machine Learning
+- Deploy em clusters de produção
+
+---
+
+**📚 Material Complementar**: [Documentação Oficial Apache Flink](https://flink.apache.org/docs/)
