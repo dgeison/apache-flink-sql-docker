@@ -14,8 +14,7 @@
 | **Instituição** | PUC Minas |
 
 ### 👥 Equipe
-- **Aluno 1**: [Nome]
-- **Aluno 2**: [Nome]
+- **Aluno**: [Dgeison Serrão Peixoto]
 
 ---
 
